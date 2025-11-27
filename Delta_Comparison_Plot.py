@@ -85,7 +85,7 @@ ax.xaxis.set_minor_formatter(NullFormatter())
 ax.grid(True, which="major", linestyle='-', linewidth=0.8, alpha=0.7)
 ax.grid(True, which="minor", linestyle=':', linewidth=0.5, alpha=0.5)
 ax.set_xlabel(r"Number of rounds, $n$", fontsize=22)
-ax.set_ylabel(r"Efficiency rate, $R_{\mathrm{eff}}$", fontsize=22)
+ax.set_ylabel(r"Expected rate, $\overline{\mathrm{rate}}_\mathrm{mul}$", fontsize=22)
 ax.legend(loc="upper left", fontsize=18)
 
 # Fix plot ticks
@@ -99,3 +99,4 @@ ax.set_yticklabels([r"$0.000$",r"$0.002$", r"$0.004$", r"$0.006$", r"$0.008$", r
 plt.tight_layout()
 plt.savefig("Delta_Comparison.pdf", format="pdf", bbox_inches="tight")
 plt.show()
+
