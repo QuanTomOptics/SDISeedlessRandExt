@@ -104,7 +104,7 @@ ax.yaxis.set_minor_locator(MultipleLocator(0.001))
 ax.grid(True, which="major", linestyle='-', linewidth=0.8, alpha=0.7)
 ax.grid(True, which="minor", linestyle=':', linewidth=0.5, alpha=0.5)
 ax.set_xlabel(r"Noise strength, $p$ in \%", fontsize=22)
-ax.set_ylabel(r"Efficiency rate, $R_{\mathrm{eff}}$", fontsize=22)
+ax.set_ylabel(r"Expected rate, $\overline{\mathrm{rate}}_\mathrm{mul}$", fontsize=22)
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1],loc="lower left", fontsize=18)
 
@@ -119,3 +119,4 @@ ax.set_yticklabels([r"$0.004$",r"$0.008$",r"$0.012$",r"$0.016$"],fontsize=16)
 plt.tight_layout()
 plt.savefig("Noisy_Comparison.pdf", format="pdf", bbox_inches="tight")
 plt.show()
+
