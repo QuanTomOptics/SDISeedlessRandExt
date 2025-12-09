@@ -84,7 +84,7 @@ for noise_val in noise_vals:
         else:
             print(f"Optimization failed for p_e={p_e}, p0={p0}: {result.message}", '\n')
     
-        # Save to Excel (crash-safe incremental writing with timestamp)
+        # Save to Excel
         row_data = {
             "Timestamp": pd.Timestamp.now(),
             "Reff": -result.fun,
@@ -104,11 +104,11 @@ for noise_val in noise_vals:
             df_combined = pd.DataFrame([row_data])
 
         df_combined.to_excel(output_file, index=False, engine="openpyxl")
-        print(f"✅ Results saved to {output_file}\n")
+        print(f"Results saved to {output_file}\n")
     
     
     except Exception as e:
-        print(f"⚠️ Exception at iteration i={noise_vals.index(noise_val)}: {e}")
+        print(f"Exception at iteration i={noise_vals.index(noise_val)}: {e}")
         continue
     
 elapsed = timeit.default_timer() - start_time
@@ -237,7 +237,7 @@ for n in n_values:
             print(f"Error rate: {err_prop}, Invalid nus: {invnus_prop}, Exception rate: {except_prop}")
             print(f"Avg dual value: {avgdualvalue}, Dual exceptions: {exceptdual_prop}")
     
-            # Save to Excel (crash-safe incremental writing with timestamp)
+            # Save to Excel
             row_data = {
                 "Timestamp": pd.Timestamp.now(),
                 "n": n,
@@ -267,11 +267,12 @@ for n in n_values:
                 df_combined = pd.DataFrame([row_data])
     
             df_combined.to_excel(output_file, index=False, engine="openpyxl")
-            print(f"✅ Results saved to {output_file}\n")
+            print(f"Results saved to {output_file}\n")
     
         except Exception as e:
-            print(f"⚠️ Exception at iteration i={n_values.index(n)}, n={n}: {e}")
+            print(f"Exception at iteration i={n_values.index(n)}, n={n}: {e}")
             continue
 
 elapsed = timeit.default_timer() - start_time
+
 print(f"\nTotal time taken for optimization: {elapsed:.2f} s\n")
