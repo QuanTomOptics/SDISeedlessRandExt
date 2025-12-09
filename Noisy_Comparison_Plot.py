@@ -1,5 +1,5 @@
 """
-Loads results data from xlsx files and plots the rates comparison for different values of the noise.
+Loads results data from xlsx files and plots the rates comparison for different values of the noise
 """
 
 
@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import MultipleLocator
+import Utils as ut
 
 # Seaborn style and context
 sns.set(
@@ -22,22 +23,6 @@ sns.set(
     },
     font_scale=1.2
 )
-
-
-#%% DEFINE FUNCTIONS
-
-
-def sci_label(x):
-    """
-    Function to replace python scientific notation with physics scientific notation
-    
-        x -- float to convert to physics scientific notation
-    """
-    # Format in scientific notation, e.g. "1.23e-4"
-    s = f"{x:.0e}"
-    coeff, exp = s.split("e")
-    exp = int(exp)  # remove + sign, leading zeros
-    return rf"${coeff} \times 10^{{{exp}}}$"
 
 
 #%% LOAD DATA
@@ -90,7 +75,7 @@ for i, block in enumerate(blocks[:5]):  # Take first five blocks
     dev_reff = block["Dev.1"].values
     
     # Plot finite rates with standard deviation
-    ax.plot(noise_vals, avg_reff, label=f"$n$ = {sci_label(n_vals[0])}", color=colors[i], linewidth=2)
+    ax.plot(noise_vals, avg_reff, label=f"$n$ = {ut.sci_label(n_vals[0])}", color=colors[i], linewidth=2)
     ax.fill_between(noise_vals, avg_reff - dev_reff, avg_reff + dev_reff, color=colors[i], alpha=0.3)
 
 # Plot asymptotic rate
@@ -119,6 +104,3 @@ ax.set_yticklabels([r"$0.004$",r"$0.008$",r"$0.012$",r"$0.016$"],fontsize=16)
 plt.tight_layout()
 plt.savefig("Noisy_Comparison.pdf", format="pdf", bbox_inches="tight")
 plt.show()
-
-
-

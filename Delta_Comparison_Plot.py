@@ -1,5 +1,5 @@
 """
-Loads results data from xlsx files and plots the rates comparison for different values of delta.
+Loads results data from xlsx files and plots the rates comparison for different values of delta
 """
 
 
@@ -99,4 +99,3 @@ ax.set_yticklabels([r"$0.000$",r"$0.002$", r"$0.004$", r"$0.006$", r"$0.008$", r
 plt.tight_layout()
 plt.savefig("Delta_Comparison.pdf", format="pdf", bbox_inches="tight")
 plt.show()
-
