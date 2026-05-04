@@ -43,7 +43,7 @@ for i in range(1001):
     delta_aux = p0 * p1
     
     # Calculate guessing probability
-    pguess,_ = ut.dual(np.sqrt(delta_aux), behavior)
+    pguess,_ = ut.dual(delta_aux, behavior)
 
     # Store values
     deltavect[i] = delta

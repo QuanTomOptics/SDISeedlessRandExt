@@ -32,7 +32,7 @@ start_time = timeit.default_timer()
 p_e = 0.955
 p_r = 1 - p_e
 
-# Lower bound on the fidelity (square root)
+# Lower bound on the fidelity
 delta = 0.500004
 
 # Ideal behavior
@@ -56,7 +56,7 @@ for noise_val in noise_vals:
         p0, p1 = behavior[0][0], behavior[0][1]
         
         # Dual value
-        dual_value, _ = ut.dual(np.sqrt(delta), behavior)
+        dual_value, _ = ut.dual(delta, behavior)
     
         # Definition of constraints
         constraints = []
@@ -77,14 +77,14 @@ for noise_val in noise_vals:
         if result.success and result.fun<=0:
             beta,alphas,nus,_ = ut.unpack_params(result.x)
             try:
-                if ut.check_valid_nus(np.sqrt(delta), nus):
+                if ut.check_valid_nus(delta, nus):
                     print(f"p_e={p_e}, p0={p0}, dual={dual_value}, Reff={-result.fun}", '\n')
             except Exception as e:
                 print(f"Skipping p0={p0} due to solver failure: {e}")
         else:
             print(f"Optimization failed for p_e={p_e}, p0={p0}: {result.message}", '\n')
     
-        # Save to Excel
+        # Save to Excel (crash-safe incremental writing with timestamp)
         row_data = {
             "Timestamp": pd.Timestamp.now(),
             "Reff": -result.fun,
@@ -104,11 +104,11 @@ for noise_val in noise_vals:
             df_combined = pd.DataFrame([row_data])
 
         df_combined.to_excel(output_file, index=False, engine="openpyxl")
-        print(f"Results saved to {output_file}\n")
+        print(f"✅ Results saved to {output_file}\n")
     
     
     except Exception as e:
-        print(f"Exception at iteration i={noise_vals.index(noise_val)}: {e}")
+        print(f"⚠️ Exception at iteration i={noise_vals.index(noise_val)}: {e}")
         continue
     
 elapsed = timeit.default_timer() - start_time
@@ -128,7 +128,7 @@ start_time = timeit.default_timer()
 p_e = 0.955
 p_r = 1 - p_e
 
-# Lower bound on the fidelity (square root)
+# Lower bound on the fidelity
 delta = 0.500004
 
 # Ideal behavior
@@ -195,13 +195,13 @@ for n in n_values:
                 if result.success and result.fun <= 0:
                     beta, alphas, nus, _ = ut.unpack_params(result.x)
                     try:
-                        dual_value, _ = ut.dual(np.sqrt(delta), behavior)
+                        dual_value, _ = ut.dual(delta, behavior)
                         dualvalue.append(dual_value)
                     except Exception as e:
                         exceptdual += 1
                         print(f"Skipping due to exception in dual: {e}", '\n')
                     try:
-                        if ut.check_valid_nus(np.sqrt(delta), nus):
+                        if ut.check_valid_nus(delta, nus):
                             optvalue.append(-result.fun/escale) # total output length
                             reffvalue.append(-result.fun/(escale*n)) # efficiency rate
                             rextvalue.append(-result.fun/(escale*n_r)) # extraction rate
@@ -237,7 +237,7 @@ for n in n_values:
             print(f"Error rate: {err_prop}, Invalid nus: {invnus_prop}, Exception rate: {except_prop}")
             print(f"Avg dual value: {avgdualvalue}, Dual exceptions: {exceptdual_prop}")
     
-            # Save to Excel
+            # Save to Excel (crash-safe incremental writing with timestamp)
             row_data = {
                 "Timestamp": pd.Timestamp.now(),
                 "n": n,
@@ -267,12 +267,11 @@ for n in n_values:
                 df_combined = pd.DataFrame([row_data])
     
             df_combined.to_excel(output_file, index=False, engine="openpyxl")
-            print(f"Results saved to {output_file}\n")
+            print(f"✅ Results saved to {output_file}\n")
     
         except Exception as e:
-            print(f"Exception at iteration i={n_values.index(n)}, n={n}: {e}")
+            print(f"⚠️ Exception at iteration i={n_values.index(n)}, n={n}: {e}")
             continue
 
 elapsed = timeit.default_timer() - start_time
-
 print(f"\nTotal time taken for optimization: {elapsed:.2f} s\n")

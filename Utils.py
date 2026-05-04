@@ -89,7 +89,7 @@ def dual(delta,behavior):
     H=[H0,H1]
     
     # We define some arbitrary pure states that saturate the bound on the fidelity
-    rho0 = np.array([[delta**2,delta*np.sqrt(1-delta**2)],[delta*np.sqrt(1-delta**2),1-delta**2]])
+    rho0 = np.array([[delta, np.sqrt(delta)*np.sqrt(1-delta)],[np.sqrt(delta)*np.sqrt(1-delta), 1-delta]])
     rho1 = np.array([[1,0],[0,0]])
     rhos = [rho0,rho1]
 
@@ -143,7 +143,7 @@ def check_valid_nus(delta,opt_nus):
     H=[H0,H1]
     
     # We define some arbitrary pure states that saturate the bound on the fidelity
-    rho0 = np.array([[delta**2,delta*np.sqrt(1-delta**2)],[delta*np.sqrt(1-delta**2),1-delta**2]])
+    rho0 = np.array([[delta, np.sqrt(delta)*np.sqrt(1-delta)],[np.sqrt(delta)*np.sqrt(1-delta), 1-delta]])
     rho1 = np.array([[1,0],[0,0]])
     rhos = [rho0,rho1]
 

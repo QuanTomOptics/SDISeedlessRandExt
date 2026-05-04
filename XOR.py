@@ -35,6 +35,9 @@ behavior = np.array([[p0,p1],[1-p0,1-p1]]) # behavior[a][x] = p(a|x)
 rho0 = np.array([[delta, np.sqrt(delta)*np.sqrt(1-delta)],[np.sqrt(delta)*np.sqrt(1-delta), 1-delta]])
 rho1 = np.array([[1,0],[0,0]])
 
+np.random.seed(123) # Reproducibility
+numOfattemps=100
+
 for p_e in p_e_vals:
     p_r = 1 - p_e
     
@@ -42,8 +45,6 @@ for p_e in p_e_vals:
     constraints = []
     ut.include_constraints(constraints,rho0,rho1,p_e,p_r,'XOR') # Select 'XOR' or 'MBIT'
 
-    numOfattemps=100
-    np.random.seed(123) # Reproducibility
     
     # Calculation of minimum p_e
     found = False
