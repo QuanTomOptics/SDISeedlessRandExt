@@ -17,6 +17,7 @@ def kronecker_delta(i, j):
     """
     Defines the Kronecker delta function between two indices
     
+    Args:
         i,j -- variable indices
     """
     
@@ -28,6 +29,7 @@ def sci_label(x):
     """
     Function to replace python scientific notation with physics scientific notation
     
+    Args:
         x -- float to convert to physics scientific notation
     """
     
@@ -48,6 +50,7 @@ def setNumericalPrecisionForSolver(problem):
     """
     Sets the numerical precission for the SDP solver
     
+    Args:
         problem -- sdp optimization problem
     """
     
@@ -67,7 +70,8 @@ def dual(delta,behavior):
     """
     Solves the dual form of the optimization problem for the pguess (fixed input) defined in Eq.(3)
     
-        delta -- lower bound to the fidelity between input states
+    Args:
+        delta    -- lower bound to the fidelity between input states
         behavior -- expected conditional probability distribution for inputs/outputs
     """
     
@@ -121,7 +125,8 @@ def check_valid_nus(delta,opt_nus):
     """
     Checks the validity of obtained optimal parameters for the pguess dual optimization
     
-        delta -- lower bound to the fidelity between input states
+    Args:
+        delta   -- lower bound to the fidelity between input states
         opt_nus -- optimal values for the "nu" parameters
     """
     
@@ -176,9 +181,11 @@ def check_valid_nus(delta,opt_nus):
 def unpack_params(params):
     """
     Unpacks the list of parameters for the optimizations of m(t,z) in Eqs.(12) and (14) 
-        
+    
+    Args:    
         params -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
     """
+    
     beta = params[0]
     alphas = np.array([[params[1], params[2]], [params[3], params[4]]])
     nus = np.array([[params[5], params[6]], [params[7], params[8]]])
@@ -190,12 +197,14 @@ def unpack_params(params):
 def objective_asym_XOR(params,behavior,p_e,p_r):
     """ 
     Objective function to minimize to check if there is extraction for the XOR extractor
+    
     Args:
-        params -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
+        params   -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
         behavior -- expected conditional probability distribution for inputs/outputs
-        p_e -- probability of an estimation round
-        p_r -- probability of a raw key generation round
+        p_e      -- probability of an estimation round
+        p_r      -- probability of a raw key generation round
     """
+    
     beta,alphas,_,_ = unpack_params(params)
     
     return -(p_e/2*sum(behavior[a][x]*alphas[a][x] for a in range(2) for x in range(2)) + p_r*(beta-1)) 
@@ -204,12 +213,14 @@ def objective_asym_XOR(params,behavior,p_e,p_r):
 def objective_asym(params,behavior,p_e,p_r):
     """ 
     Objective function to minimize for the calculation of the asymptotic efficiency rate for the multi-bit extractors
+    
     Args:
-        params (list): List of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
+        params   -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
         behavior -- expected conditional probability distribution for inputs/outputs
-        p_e -- probability of an estimation round
-        p_r -- probability of a raw key generation round
+        p_e      -- probability of an estimation round
+        p_r      -- probability of a raw key generation round
     """
+    
     beta,alphas,_,_ = unpack_params(params)
     
     return -(p_e/2*sum(behavior[a][x]*alphas[a][x] for a in range(2) for x in range(2)) + p_r*beta) 
@@ -218,16 +229,18 @@ def objective_asym(params,behavior,p_e,p_r):
 def objective(params,behavior,p_e,p_r,n_r,counts,escale,eps):
     """ 
     Objective function to minimize for the calculation of the finite size efficiency rate for the multi-bit extractors
+    
     Args:
-        params -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
+        params   -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
         behavior -- expected conditional probability distribution for inputs/outputs
-        p_e -- probability of an estimation round
-        p_r -- probability of a raw key generation round
-        n_r -- length of the raw key
-        counts -- finite-size sample of size n_e of the behavior
-        escale -- scale factor for numerical stability
-        eps -- security parameter of the protocol
+        p_e      -- probability of an estimation round
+        p_r      -- probability of a raw key generation round
+        n_r      -- length of the raw key
+        counts   -- finite-size sample of size n_e of the behavior
+        escale   -- scale factor for numerical stability
+        eps      -- security parameter of the protocol
     """
+    
     beta, alphas, _, _ = unpack_params(params)
     
     return -escale*(sum(counts[a][x]*alphas[a][x] for a in range(2) for x in range(2))
@@ -237,12 +250,14 @@ def objective(params,behavior,p_e,p_r,n_r,counts,escale,eps):
 def linear_constraints(a,lam,params,rho0,rho1):
     """ 
     Linear constraints for the optimization problem for both kinds of extractors
-
-        a -- output index (0 or 1)
-        lam -- strategy index (0 or 1)
-        params -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
+    
+    Args:
+        a          -- output index (0 or 1)
+        lam        -- strategy index (0 or 1)
+        params     -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
         rho0, rho1 -- arbitrary pure quantum states with a fixed overlap
     """
+    
     #Since we cannot impose a matricial constraint, we just need to impose that the eigenvalues of
     #M (the constraint) are negative since the constraint must be negative semidefinite
     
@@ -262,13 +277,15 @@ def linear_constraints(a,lam,params,rho0,rho1):
 def nonlinear_constraints_XOR(a,x,params,p_e,p_r):
     """ 
     Nonlinear constraints for the optimization problem for the XOR extractor
-
-        a -- output index (0 or 1)
-        x -- input index (0 or 1)
+    
+    Args:
+        a      -- output index (0 or 1)
+        x      -- input index (0 or 1)
         params -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
-        p_e -- probability of an estimation round
-        p_r -- probability of a raw key generation round
+        p_e    -- probability of an estimation round
+        p_r    -- probability of a raw key generation round
     """
+    
     beta,alphas,nus,_ = unpack_params(params)
     
     return -p_r*np.sqrt(2)**(beta-1)*(4*nus[a][x]-1) - p_e*np.sqrt(2)**alphas[a][x] + 1
@@ -277,13 +294,15 @@ def nonlinear_constraints_XOR(a,x,params,p_e,p_r):
 def nonlinear_constraints(a,x,params,p_e,p_r):
     """ 
     Nonlinear constraints for the optimization problem for the multi-bit extractors
-
-         a -- output index (0 or 1)
-         x -- input index (0 or 1)
+    
+    Args:
+         a      -- output index (0 or 1)
+         x      -- input index (0 or 1)
          params -- list of parameters [beta,{alpha[a,x]},{nu[a,x]},{gamma[i]}]
-         p_e -- probability of an estimation round
-         p_r -- probability of a raw key generation round
+         p_e    -- probability of an estimation round
+         p_r    -- probability of a raw key generation round
     """
+    
     beta,alphas,nus,_ = unpack_params(params)
     
     return -p_r*np.sqrt(2)**(beta-1)*(4*nus[a][x]) - p_e*np.sqrt(2)**alphas[a][x] + 1 
@@ -292,12 +311,13 @@ def nonlinear_constraints(a,x,params,p_e,p_r):
 def include_constraints(constraints,rho0,rho1,p_e,p_r,ext_type):
     """ 
     Function to construct the list of constraints for both types of extractors
-
+    
+    Args:
         constraints -- empty list of constraints
-        rho0, rho1 -- arbitrary pure quantum states with a fixed overlap
-        p_e -- probability of an estimation round
-        p_r -- probability of a raw key generation round
-        ext_type -- type of extractor ({'XOR', 'MBIT'})
+        rho0, rho1  -- arbitrary pure quantum states with a fixed overlap
+        p_e         -- probability of an estimation round
+        p_r         -- probability of a raw key generation round
+        ext_type    -- type of extractor ({'XOR', 'MBIT'})
     """
     
     # Linear constraints
