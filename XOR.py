@@ -24,7 +24,7 @@ errorTolerance = 1e-10
 delta = 0.001
 
 # Range of values for p_e we want to test
-p_e_vals = np.linspace(0.0001,1,1000)
+p_e_vals = np.linspace(0.001,1,100)
 
 # Behavior
 p0 = delta
@@ -45,7 +45,6 @@ for p_e in p_e_vals:
     constraints = []
     ut.include_constraints(constraints,rho0,rho1,p_e,p_r,'XOR') # Select 'XOR' or 'MBIT'
 
-    
     # Calculation of minimum p_e
     found = False
     for _ in range(numOfattemps):
@@ -67,6 +66,7 @@ for p_e in p_e_vals:
 
                 print("For delta=",delta, "a value of p_e sufficient for extraction is",p_e)
                 print("optimization's obj value=",-result.fun,"nonlinear constraint's violations:",viols)
+                print("beta:", beta, "alphas:", alphas, "nus:", nus)
                 found=True
                 break
     if found:
